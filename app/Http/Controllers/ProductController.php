@@ -76,6 +76,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return array
      */
+    //yygug
     public function show($id)
     {
         $product= Product::find($id);
