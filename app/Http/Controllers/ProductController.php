@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\Types\This;
 
@@ -23,6 +24,15 @@ class ProductController extends Controller
     function dateDiff($date1,$date2){
         $date = $this->dateDiff($date1,$date2);
         return $date->format('%R%a');
+    }
+    public function sortDate($date1,$date2,$date3){
+        $date =[
+           'date1'=> $date1,
+            'date2'=> $date2,
+            'date3'=> $date3
+        ];
+        $sorted = $date->sortBy('date')->values()->all();
+        return $this->returnData('sort',$sorted);
     }
 
     /**
@@ -44,6 +54,9 @@ class ProductController extends Controller
             'price' => 'required',
             'r1'=>'required',//range1
             'r2'=>'required',//range2
+            'date1'=>'required',
+            'date2'=>'required',
+            'date3'=>'required',
             'dis1' => 'required', //sale1
             'dis2' => 'required',//sale2
             'dis3' => 'required'//sale3
@@ -53,19 +66,12 @@ class ProductController extends Controller
             return $this->returnError(401, $validator->errors());
         }
 
-       $dt=$this->dateDiff(now(),$product['endDate']);
-        if ($dt>$product['r1']){
-            $sale=$product['dis1'];
-            return  $this->returnData('sale',$sale);
-        }
-        elseif ($dt>$product['r2'] && $dt<$product['r1']){
-            $sale=$product['dis2'];
-            return  $this->returnData('sale',$sale);
-        }
-        elseif ($dt<$product['r2']){
-            $sale=$product['dis3'];
-            return  $this->returnData('sale',$sale);
-        }
+       $dt1=$this->dateDiff($product['created_at'],$product['date1']);
+        $dt2= $this->dateDiff($product['date1'],$product['date2']);
+        $dt3= $this->dateDiff($product['date2'],$product['date3']);
+        $dt = $this->dateDiff($product['created_at'],$product['endDate']);
+        $sdt=$this->sortDate($product['date1'],$product['date2'],$product['date3']);
+        echo $sdt;
         $product=Product::create($product);
         return $this->returnData("Product",$product);
     }
@@ -76,7 +82,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return array
      */
-    //yygug
+
     public function show($id)
     {
         $product= Product::find($id);
@@ -88,7 +94,7 @@ class ProductController extends Controller
 
     public function showAllProducts(){
 
-        return Product::all();
+        return Product::selecte('name','image');
     }
 
     /**
@@ -99,9 +105,46 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $input=$request->all();
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'image'=>'required|image',
+            'contact'=>'required',
+            'cat_Id'=>'required',
+            'quantity'=>'required',
+            'price' => 'required',
+            'r1'=>'required',//range1
+            'r2'=>'required',//range2
+            'date1'=>'required',
+            'date2'=>'required',
+            'date3'=>'required',
+            'dis1' => 'required', //sale1
+            'dis2' => 'required',//sale2
+            'dis3' => 'required'//sale3
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnError(401, $validator->errors());
+        }
+        $product->name=$input['name'];
+        $product->image=$input['image'];
+        $product->contact=$input['contact'];
+        $product->cat_Id=$input['cat_Id'];
+        $product->quantity=$input['quantity'];
+        $product->price=$input['price'];
+        $product->r1=$input['r1'];
+        $product->r2=$input['r2'];
+        $product->date1=$input['date1'];
+        $product->date2=$input['date2'];
+        $product->date3=$input['date3'];
+        $product->dis1=$input['dis1'];
+        $product->dis2=$input['dis2'];
+        $product->dis3=$input['dis3'];
+        $product->save();
+        $input=Product::create($input);
+        return $this->returnData("Product",$input);
     }
 
     /**

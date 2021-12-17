@@ -38,4 +38,5 @@ Route ::post('add',[ProductController::class,'store']);
 Route ::post('show',[ProductController::class,'show']);
 Route ::post('showAll',[ProductController::class,'showAllProducts']);
 Route ::post('delete',[ProductController::class,'destroy']);
+Route ::post('sort',[ProductController::class,'sortDate']);
 
