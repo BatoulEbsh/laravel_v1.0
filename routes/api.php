@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -38,5 +39,5 @@ Route ::post('add',[ProductController::class,'store']);
 Route ::post('show',[ProductController::class,'show']);
 Route ::post('showAll',[ProductController::class,'showAllProducts']);
 Route ::post('delete',[ProductController::class,'destroy']);
-Route ::post('sort',[ProductController::class,'sortDate']);
-
+//Route ::post('sort',[ProductController::class,'sortDate']);
+Route ::post('readNumber',[PostController::class,'show']);
