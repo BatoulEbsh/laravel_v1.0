@@ -10,6 +10,7 @@ use App\Traits\GeneralTrait;
 class PostController extends Controller
 {
     use  GeneralTrait;
+
     public  function show (Post $post){
         if (Cookie::get($post->id)!=''){
             Cookie::set('$post->id','1','60');

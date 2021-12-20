@@ -15,10 +15,6 @@ class Post extends Model
         'like',
         'reads'
 
-
         ];
-public  function incrementReadCount (){
-    $this->reads++;
-    return $this->save();
-}
+
 }

@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Product\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,23 +21,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group([
-
-    'middleware' => 'api',
     'prefix' => 'auth'
 
 ], function ($router) {
 
     Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::post('register', [AuthController::class, 'register']);
+    Route::group(['middleware' => 'authUser:api',], function () {
+        Route::post('logout', 'AuthController@logout');
+        Route::post('refresh', 'AuthController@refresh');
+        Route::post('me', 'AuthController@me');
+    });
 
 
 });
-Route ::post('register',[AuthController::class,'register']);
-Route ::post('add',[ProductController::class,'store']);
-Route ::post('show',[ProductController::class,'show']);
-Route ::post('showAll',[ProductController::class,'showAllProducts']);
-Route ::post('delete',[ProductController::class,'destroy']);
-//Route ::post('sort',[ProductController::class,'sortDate']);
-Route ::post('readNumber',[PostController::class,'show']);
+Route::group(['middleware' => 'authUser:api'], function () {
+    Route::post('add', [ProductController::class, 'store']);
+    Route::post('show', [ProductController::class, 'show']);
+    Route::get('showAll', [ProductController::class, 'index']);
+    Route::delete('delete/{id}', [ProductController::class, 'destroy']);
+    Route::post('update/{id}', [ProductController::class, 'update']);
+});

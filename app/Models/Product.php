@@ -25,23 +25,25 @@ class Product extends Model
         'price',
         'r1',
         'r2',
-        'date1',
-        'date2',
-        'date3',
+        'r3',
+        'main_price',
         'dis1',
         'dis2',
-        'dis3'
+        'dis3',
+        'days',
+        'user_id'
     ];
     protected $hidden = [
-        'price',
         'r1',
         'r2',
-        'date1',
-        'date2',
-        'date3',
+        'r3',
+        'main_price',
         'dis1',
         'dis2',
         'dis3'
     ];
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
 
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
@@ -11,17 +12,6 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     use GeneralTrait;
-
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('authUser:api', ['except' => ['login','register']]);
-    }
-
     /**
      * Get a JWT via given credentials.
      *
